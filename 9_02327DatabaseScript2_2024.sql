@@ -1,6 +1,6 @@
 -- It must contain:
-  -- (1) the delete/update statements used to change the tables (as in section 5), and
-  -- (2) the queries made (as in section 6), and
+  -- (1) the delete/update statements used to change the tables (as in section 5)
+  -- (2) the queries made (as in section 6)
   
     -- Answer the following questions by writing appropriate SQL table queries:
       -- Show the ID of the passengers who took a ride from the first stop of the line taken.
