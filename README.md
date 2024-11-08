@@ -7,7 +7,7 @@
 2. the queries made (as in section 6), and
 3. the statements used to create and apply functions, procedures, triggers, and events (as in section 7)
 
-## Requirements:
+## Requirements (todos):
 MoviBus aims at collecting information on the habits of its passengers. In particular, MoviBus needs to know:
 - [ ] The ID of the passengers who took a ride from the first stop of the line taken.
 - [ ] The name of the bus stop served my most lines.
