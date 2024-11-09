@@ -21,7 +21,7 @@ CREATE TABLE Stops (
     FOREIGN KEY (line_id) REFERENCES Line(line_id)
 );
 
-CREATE TABLE Lines_Stops (
+CREATE TABLE Line_Stops (
     line_id INT,
     stop_id INT,
     stop_order INT,
@@ -111,7 +111,7 @@ INSERT INTO Rides (card_id, ride_id, start_date, start_time, duration, on_stop_i
 (1003, 50003, '2023-10-02', '11:15:00', 20, 103, 102, 3), -- A passenger taking multiple rides
 (1004, 50004, '2023-10-03', '12:45:00', 25, 104, 105, 4); -- Another ride on a different line
 
-INSERT INTO Lines_Stops (line_id, stop_id, stop_order) VALUES
+INSERT INTO Line_Stops (line_id, stop_id, stop_order) VALUES
 (1, 101, 1),
 (1, 102, 2),
 (1, 103, 3), -- Stops in order for Downtown Express line
