@@ -39,9 +39,9 @@ select * from Stops;
   -- (2) the queries made (as in section 6)
     -- Answer the following questions by writing appropriate SQL table queries:
       -- Show the ID of the passengers who took a ride from the first stop of the line taken.
-      select * from Line_Stops;
-      select * from Rides, Line_Stops where Line_Stops.stop_order = 1;
-      select distinct card_id from Rides, Line_Stops where Line_Stops.stop_order = 1;
+      select * from Stops_Line;
+      select * from Rides, Stops_Line where Stops_Line.stop_order = 1;
+      select distinct card_id from Rides, Stops_Line where Stops_Line.stop_order = 1;
 		-- output:
         -- card_id
         -- 1001
@@ -51,8 +51,8 @@ select * from Stops;
         -- 1005
       -- Show the name of the bus stop served my most lines.
        select * from Stops;
-      select * from Line_Stops;
-      select stop_id, count(Line_Stops.stop_id) from Line_Stops group by Line_Stops.stop_id LIMIT 1;
+      select * from Stops_Line;
+      select stop_id, count(Stops_Line.stop_id) from Stops_Line group by Stops_Line.stop_id LIMIT 1;
       -- output:
       -- stop_id
       -- 101
