@@ -1,3 +1,7 @@
+## Report
+[https://docs.google.com/document/d/1oTUokakWymKRVNeF8VwQuT9H8SXoEvU71q1X_I9YIkE](https://docs.google.com/document/d/1oTUokakWymKRVNeF8VwQuT9H8SXoEvU71q1X_I9YIkE)
+
+
 ## 02327DatabaseScript1_2024.sql must contain:
 1. the statements used to create the database, its tables and views (as used in section 3 of the report)
 2. the statements used to populate the tables (as used in section 4)
