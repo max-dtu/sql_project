@@ -19,7 +19,7 @@ CREATE TABLE Stops (
     GPS VARCHAR(255)
 );
 
-CREATE TABLE Line_Stops (
+CREATE TABLE Stops_Line (
     line_id INT,
     stop_id INT,
     stop_order INT,
@@ -122,7 +122,7 @@ INSERT INTO Rides (card_id, ride_id, start_date, start_time, duration, on_stop_i
 
 (1005, 50007, '2023-10-03', '11:15:00', 20, 103, 102, 2);
 
-INSERT INTO Line_Stops (line_id, stop_id, stop_order) VALUES
+INSERT INTO Stops_Line (line_id, stop_id, stop_order) VALUES
 (1, 101, 1),
 (1, 102, 2),
 (1, 103, 3), 
