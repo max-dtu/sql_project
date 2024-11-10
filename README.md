@@ -1,5 +1,5 @@
 ## Report
-[https://docs.google.com/document/d/1oTUokakWymKRVNeF8VwQuT9H8SXoEvU71q1X_I9YIkE](https://docs.google.com/document/d/1oTUokakWymKRVNeF8VwQuT9H8SXoEvU71q1X_I9YIkE)
+[Click here](https://docs.google.com/document/d/1oTUokakWymKRVNeF8VwQuT9H8SXoEvU71q1X_I9YIkE](https://docs.google.com/document/d/e/2PACX-1vQAcdszsHldnEmwamwCEGe5D6igwHYDeaI71CSE4t_sJal92BeXnzk5m3u6TO8oOEYFa4odnTOq1SvK)
 
 
 ## 02327DatabaseScript1_2024.sql must contain:
