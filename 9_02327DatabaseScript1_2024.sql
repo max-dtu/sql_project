@@ -16,9 +16,7 @@ CREATE TABLE Line (
 CREATE TABLE Stops (
     stop_id INT PRIMARY KEY,
     stop_name VARCHAR(255),
-    GPS VARCHAR(255),
-    line_id INT,
-    FOREIGN KEY (line_id) REFERENCES Line(line_id)
+    GPS VARCHAR(255)
 );
 
 CREATE TABLE Line_Stops (
@@ -81,17 +79,19 @@ CREATE TABLE PhoneNumbers (
 
  
  INSERT INTO Line (line_id, line_name, final_destination) VALUES
-(1, 'Downtown Express', 101),
-(2, 'City Circle', 102),
-(3, 'North Route', 103),
-(4, 'South Shuttle', 104);
+(1, 'Downtown Express', 103),
+(2, 'City Circle', 101),
+(3, 'North Route', 104),
+(4, 'South Shuttle', 101),
+(5, 'Land Road', 105);
 
-INSERT INTO Stops (stop_id, stop_name, GPS, line_id) VALUES
-(101, 'Central Station', '40.748817,-73.985428', 1),
-(102, 'City Hall', '40.712776,-74.005974', 2),
-(103, 'Museum of Art', '40.779437,-73.963244', 3),
-(104, 'University Campus', '40.730610,-73.935242', 4),
-(105, 'Park Avenue', '40.754932,-73.984016', 2);
+INSERT INTO Stops (stop_id, stop_name, GPS) VALUES
+(101, 'Central Station', '40.748817,-73.985428'),
+(102, 'City Hall', '40.712776,-74.005974'),
+(103, 'Museum of Art', '40.779437,-73.963244'),
+(104, 'University Campus', '40.730610,-73.935242'),
+(105, 'Park Avenue', '40.754932,-73.984016'),
+(106, 'DStop', '40.754932,-73.984019');
 
 INSERT INTO Addresses (address_id, country, city, zip, street_name, civic_number) VALUES
 (111, 'USA', 'New York', 10001, '5th Ave', '10A'),
@@ -102,26 +102,46 @@ INSERT INTO Passengers (card_id, email, first_name, last_name, address_id) VALUE
 (1001, 'john.doe@ex.com', 'John', 'Doe', 111),
 (1002, 'jane.smith@ex.com', 'Jane', 'Smith', 111),
 (1003, 'sam.wilson@ex.com', 'Sam', 'Wilson', 112),
-(1004, 'emily.jones@ex.com', 'Emily', 'Jones', 113);
+(1004, 'emily.jones@ex.com', 'Emily', 'Jones', 113),
+(1005, 'alice.jones@ex.com', 'Alice', 'Jones', 113);
 
 INSERT INTO Rides (card_id, ride_id, start_date, start_time, duration, on_stop_id, off_stop_id, line_id) VALUES
-(1001, 50001, '2023-10-01', '08:00:00', 30, 101, 102, 1), -- Single passenger on a ride
-(1002, 50001, '2023-10-01', '08:00:00', 30, 101, 102, 1), -- Multiple passengers on the same ride
-(1003, 50002, '2023-10-02', '09:30:00', 20, 102, 103, 2),
-(1003, 50003, '2023-10-02', '11:15:00', 20, 103, 102, 3), -- A passenger taking multiple rides
-(1004, 50004, '2023-10-03', '12:45:00', 25, 104, 105, 4); -- Another ride on a different line
+(1001, 50001, '2023-10-01', '08:00:00', 30, 101, 102, 1),
+ 
+(1002, 50001, '2023-10-01', '08:00:00', 30, 101, 102, 1), 
+
+(1003, 50002, '2023-10-01', '08:00:00', 40, 101, 103, 1), -- the longest ride (40 minutes)
+
+(1003, 50003, '2023-10-01', '09:00:00', 30, 101, 104, 3),
+
+(1004, 50004, '2023-10-02', '09:30:00', 20, 102, 103, 2),
+(1004, 50005, '2023-10-02', '11:15:00', 20, 103, 102, 2),
+(1004, 50006, '2023-10-02', '11:15:00', 30, 103, 101, 2), -- the longst ride (30 minutes)
+
+(1005, 50005, '2023-10-02', '11:15:00', 20, 103, 102, 2),
+
+(1005, 50007, '2023-10-03', '11:15:00', 20, 103, 102, 2);
 
 INSERT INTO Line_Stops (line_id, stop_id, stop_order) VALUES
 (1, 101, 1),
 (1, 102, 2),
-(1, 103, 3), -- Stops in order for Downtown Express line
+(1, 103, 3), 
+
 (2, 103, 1),
 (2, 102, 2),
-(2, 105, 3), -- Stops in order for City Circle line
+(2, 101, 3), 
+
 (3, 101, 1),
-(3, 104, 2), -- Stops in order for North Route line
-(4, 105, 1),
-(4, 104, 2); -- Stops in order for South Shuttle line
+(3, 104, 2), 
+
+(4, 104, 1),
+(4, 101, 2), 
+
+
+(5, 102, 1),
+(5, 103, 2), 
+(5, 104, 3),
+(5, 105, 4); -- 101:4, 102:3, 103:3, 104:3, 105:1 
 
 INSERT INTO Stops_Passengers (stop_id, card_id) VALUES
 (101, 1001), -- Passenger at Central Station
@@ -137,6 +157,6 @@ INSERT INTO PhoneNumbers (number, card_id) VALUES
 ('1122334455', 1002), -- Jane Smith's phone number
 ('2233445566', 1003); -- Sam Wilson's phone number
 
-ALTER TABLE Line
- ADD CONSTRAINT fk_final_destination FOREIGN KEY (final_destination) REFERENCES Stops(stop_id);
+ ALTER TABLE Line
+  ADD CONSTRAINT fk_final_destination FOREIGN KEY (final_destination) REFERENCES Stops(stop_id);
  
