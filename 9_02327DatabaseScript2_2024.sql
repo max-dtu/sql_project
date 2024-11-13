@@ -1,7 +1,7 @@
 -- It must contain:
   -- (1) the delete/update statements used to change the tables (as in section 5)
   INSERT INTO Stops (stop_id, stop_name, GPS)
-VALUES (107, 'DTU Lyngby Campus', '40.730610,-73.935242');
+VALUES (107, 'DTU Lyngby Campus', '55.7849149,12.5219711');
 
 select * from Stops;
 -- reslut after adding the above row:
@@ -15,7 +15,7 @@ select * from Stops;
 	-- '107', 'DTU Lyngby Campus', '40.730610,-73.935242'
 
 UPDATE Stops
-SET GPS = '40.712776,-74.0060'  -- New GPS coordinates for City Hall
+SET GPS = '55.7849149,12.5219711'  -- New GPS coordinates for City Hall
 WHERE stop_id = 102;
 
 select * from Stops;
@@ -197,4 +197,5 @@ CREATE PROCEDURE add_stop(new_line_id INT, new_stop_id INT)
     -- line_id: 2
     
 	--  Remember also to show illustrative usage examples of how they work.
+    --  Example: see section 7 (page 17)
     --  Example: see section 7 (page 17)
