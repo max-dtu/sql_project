@@ -204,3 +204,26 @@ CREATE PROCEDURE add_stop(new_line_id INT, new_stop_id INT)
 	--  Remember also to show illustrative usage examples of how they work.
     --  Example: see section 7 (page 17)
     --  Example: see section 7 (page 17)
+
+
+-- -- Views!! -- --
+
+-- test of the first one, it only displays the card id. 
+create view full_ride_passenger as select card_id from Rides, Stops_Line where Stops_Line.stop_order = 1 AND Rides.on_stop_id = Stops_Line.stop_id;
+select * from full_ride_passenger;
+
+-- name of the bus stop served by most lines 
+create view popular_stop as select stop_id, count(Stops_Line.stop_id) from Stops_Line group by Stops_Line.stop_id LIMIT 1;
+select * from popular_stop;
+
+-- view for each line, the ID of the passenge who took the ride that lasted longer. ie. the max durations for the different lines
+create view longest_ride as select card_id, MAX(duration), line_id from Rides group by line_id;
+select * from longest_ride;
+
+-- view for the Id of the passengers who never took a bus line more than once per day
+create view one_ride_passenger as select card_id FROM Rides GROUP BY card_id, line_id, start_date HAVING COUNT(ride_id) = 1;
+select * from one_ride_passenger;
+
+-- view for name of busstop never used (ie. never start nor end stop for any ride)
+create view lonely_stop as select stop_id from Stops where stop_id not in (SELECT distinct on_stop_id FROM Rides UNION SELECT DISTINCT off_stop_id FROM Rides);
+select * from lonely_stop;
