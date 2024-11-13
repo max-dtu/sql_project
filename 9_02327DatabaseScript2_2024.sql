@@ -115,7 +115,16 @@ select * from Stops;
 	SELECT get_lines(104,101);
     -- output:
     -- get_lines(104,101)
+    -- 2
+    SELECT get_lines(102,103);
+    -- output:
+    -- get_lines(102,103)
     -- 3
+    SELECT get_lines(101,105);
+    -- output:
+    -- get_lines(101,105)
+    -- 0
+    
 
       --  A procedure that, given a line and a stop, adds the stop to that line (after the last stop) if not already served by that line
 DROP PROCEDURE IF EXISTS add_stop;
@@ -138,6 +147,10 @@ CREATE PROCEDURE add_stop(new_line_id INT, new_stop_id INT)
 	END IF;
     END//
 	DELIMITER ;
+    CALL add_stop(1,103);
+	SELECT * FROM Stops_line;
+    -- output:
+    -- Original Stop_line
 	CALL add_stop(1,104);
 	SELECT * FROM Stops_line;
     -- output:
