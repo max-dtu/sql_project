@@ -9,7 +9,7 @@ USE MoviBus;
 CREATE TABLE Line (
     line_id INT PRIMARY KEY,
     line_name VARCHAR(255),
-    final_destination INT
+    final_destination INT NOT NULL
 	-- FOREIGN KEY (final_destination) REFERENCES Stops(stop_id)
 );
 
