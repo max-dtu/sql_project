@@ -206,13 +206,13 @@ CREATE PROCEDURE add_stop(new_line_id INT, new_stop_id INT)
     --  Example: see section 7 (page 17)
 
 
--- -- Views!! -- --
+-- -- Queries ver 2 -- --
 
--- test of the first one, it only displays the card id. 
+-- view for the displaying the card id of those who got on the first stop. 
 create view full_ride_passenger as select card_id from Rides, Stops_Line where Stops_Line.stop_order = 1 AND Rides.on_stop_id = Stops_Line.stop_id;
 select * from full_ride_passenger;
 
--- name of the bus stop served by most lines 
+-- view for the name of the bus stop served by most lines 
 create view popular_stop as select stop_id, count(Stops_Line.stop_id) from Stops_Line group by Stops_Line.stop_id LIMIT 1;
 select * from popular_stop;
 
@@ -227,3 +227,17 @@ select * from one_ride_passenger;
 -- view for name of busstop never used (ie. never start nor end stop for any ride)
 create view lonely_stop as select stop_id from Stops where stop_id not in (SELECT distinct on_stop_id FROM Rides UNION SELECT DISTINCT off_stop_id FROM Rides);
 select * from lonely_stop;
+
+
+-- !!Views!! Ver.2  --
+
+-- bus lines going through the central point
+create view central_bermuda as select line_id from Stops_line where stop_id = "101";
+select * from central_bermuda;
+-- rides that are under 30 minutes "short ride"
+create view short_ride as select ride_id from Rides where duration < 30;
+select * from short_ride;
+-- rides that are equal + longer than 30 minutes "long rides"
+create view long_ride as select ride_id from Rides where duration >= 30;
+select * from long_ride;
+-- all start and end stops of lines 
