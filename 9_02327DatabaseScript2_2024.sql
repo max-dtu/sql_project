@@ -88,7 +88,90 @@ select * from Stops;
   -- (3) the statements used to create and apply functions, procedures, triggers, and events (as in section 7)
       -- Implement and explain what they do:
       --  A function that, given two stops, returns how many lines serve both stops.
-      --  A procedure that, given a line and a stop, adds the stop to that line (after the last stop) if not already served by that line.
+    DROP FUNCTION IF EXISTS get_lines;
+      -- drops the function if it already exists
+	DELIMITER //
+    -- changes delimeter so you can write a function.
+    CREATE FUNCTION get_lines(first_stop INT, second_stop INT) RETURNS INT
+    -- declares that get_lines() takes two ints and returns one int
+    BEGIN
+		DECLARE line_counter INT;
+        -- declares the line counter
+		SELECT COUNT(*) INTO line_counter
+		FROM ( SELECT line_id
+		FROM Stops_Line 
+		WHERE stop_id in (first_stop,second_stop)
+		GROUP BY line_id
+		HAVING COUNT(DISTINCT stop_id)=2)
+		AS lines_with_both;
+        RETURN line_counter;
+    END; //
+    DELIMITER ;
+	SELECT get_lines(104,101);
+    -- output:
+    -- get_lines(104,101)
+    -- 3
+
+      --  A procedure that, given a line and a stop, adds the stop to that line (after the last stop) if not already served by that line
+DROP PROCEDURE IF EXISTS add_stop;
+DELIMITER //
+CREATE PROCEDURE add_stop(new_line_id INT, new_stop_id INT)
+    BEGIN
+		DECLARE max_stop_order INT;
+        SELECT MAX(stop_order)
+        INTO max_stop_order
+        FROM Stops_Line
+        WHERE line_id=new_line_id;
+        
+		IF NOT EXISTS (
+			SELECT 1
+			FROM Stops_Line
+			WHERE line_id=new_line_id AND stop_id=new_stop_id
+            )THEN
+            INSERT INTO Stops_Line(line_id,stop_id,stop_order)
+			VALUES (new_line_id, new_stop_id, max_stop_order+1);
+	END IF;
+    END//
+	DELIMITER ;
+	CALL add_stop(1,104);
+	SELECT * FROM Stops_line;
+    -- output:
+    -- Stop_lines with
+    -- line_id 1
+    -- stop_id 104
+    -- stop_order 4
+    
       --  A trigger that prevents inserting a ride starting and ending at the same stop, or at a stop not served by that line.
+    DELIMITER //
+	CREATE TRIGGER ride_trigger
+      BEFORE INSERT ON Rides
+      FOR EACH ROW
+      BEGIN
+      IF NEW.on_stop_id=NEW.off_stop_id
+      THEN SIGNAL SQLSTATE 'HY000'
+			SET MYSQL_ERRNO = 1525,
+			MESSAGE_TEXT = 'The end stop is equal to start stop';
+      END IF;
+      IF NEW.on_stop_id NOT IN 
+      (SELECT stop_id FROM Stops_Line
+      WHERE line_id=NEW.line_id)
+      THEN SIGNAL SQLSTATE 'HY000'
+			SET MYSQL_ERRNO = 1525,
+			MESSAGE_TEXT = 'The on stop is not on the line';
+      END IF;
+      IF NEW.off_stop_id NOT IN 
+      (SELECT stop_id FROM Stops_Line
+      WHERE line_id=NEW.line_id)
+      THEN SIGNAL SQLSTATE 'HY000'
+			SET MYSQL_ERRNO = 1525,
+			MESSAGE_TEXT = 'The end stop is not on the line';
+      END IF;
+      END//
+	DELIMITER ;
+    SELECT * FROM Rides;
+    SELECT * FROM Stops_line;
+    INSERT INTO Rides (card_id, ride_id,start_date,start_time,duration,on_stop_id,off_stop_id,line_id)
+    VALUES(1001,5008,'2024-11-13','10:00:00',20,101,102,2);
+
       --  Remember also to show illustrative usage examples of how they work.
     --  Example: see section 7 (page 17)
