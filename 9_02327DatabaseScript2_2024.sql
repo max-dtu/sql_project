@@ -147,11 +147,13 @@ CREATE PROCEDURE add_stop(new_line_id INT, new_stop_id INT)
       BEFORE INSERT ON Rides
       FOR EACH ROW
       BEGIN
+      -- the part of the trigger that prevents getting off on the stop you got on
       IF NEW.on_stop_id=NEW.off_stop_id
       THEN SIGNAL SQLSTATE 'HY000'
 			SET MYSQL_ERRNO = 1525,
 			MESSAGE_TEXT = 'The end stop is equal to start stop';
       END IF;
+      -- The trigger that prevents getting on a stop that is not on the line
       IF NEW.on_stop_id NOT IN 
       (SELECT stop_id FROM Stops_Line
       WHERE line_id=NEW.line_id)
@@ -159,6 +161,7 @@ CREATE PROCEDURE add_stop(new_line_id INT, new_stop_id INT)
 			SET MYSQL_ERRNO = 1525,
 			MESSAGE_TEXT = 'The on stop is not on the line';
       END IF;
+      -- The trigger preventing getting off on a stop that is not on the line
       IF NEW.off_stop_id NOT IN 
       (SELECT stop_id FROM Stops_Line
       WHERE line_id=NEW.line_id)
@@ -168,10 +171,30 @@ CREATE PROCEDURE add_stop(new_line_id INT, new_stop_id INT)
       END IF;
       END//
 	DELIMITER ;
-    SELECT * FROM Rides;
-    SELECT * FROM Stops_line;
+    INSERT INTO Rides (card_id, ride_id,start_date,start_time,duration,on_stop_id,off_stop_id,line_id)
+    VALUES(1001,5008,'2024-11-13','10:00:00',20,101,101,2);
+    -- output
+    -- Error Code: 1525. The end stop is equal to start stop
+    INSERT INTO Rides (card_id, ride_id,start_date,start_time,duration,on_stop_id,off_stop_id,line_id)
+    VALUES(1001,5008,'2024-11-13','10:00:00',20,104,101,2);
+    -- output
+    -- Error Code: 1525. The on stop is not on the line
+	INSERT INTO Rides (card_id, ride_id,start_date,start_time,duration,on_stop_id,off_stop_id,line_id)
+    VALUES(1001,5008,'2024-11-13','10:00:00',20,101,104,2);
+    -- Error Code: 1525. The end stop is not on the line
     INSERT INTO Rides (card_id, ride_id,start_date,start_time,duration,on_stop_id,off_stop_id,line_id)
     VALUES(1001,5008,'2024-11-13','10:00:00',20,101,102,2);
-
-      --  Remember also to show illustrative usage examples of how they work.
+    SELECT * FROM Rides;
+    -- output
+    -- Same Rides as before but with:
+    -- card_id: 1001
+    -- ride_id: 5008
+    -- start_date: '2024-11-13'
+    -- start_time: '10:00:00'
+    -- duration: 20
+    -- on_stop_id: 101
+    -- off_stop_id: 102
+    -- line_id: 2
+    
+	--  Remember also to show illustrative usage examples of how they work.
     --  Example: see section 7 (page 17)
