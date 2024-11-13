@@ -22,7 +22,7 @@ CREATE TABLE Stops (
 CREATE TABLE Stops_Line (
     line_id INT,
     stop_id INT,
-    stop_order INT,
+    stop_order INT NOT NULL,
     PRIMARY KEY (line_id, stop_id),
     FOREIGN KEY (line_id) REFERENCES Line(line_id),
     FOREIGN KEY (stop_id) REFERENCES Stops(stop_id)
@@ -30,11 +30,11 @@ CREATE TABLE Stops_Line (
 
 CREATE TABLE Addresses (
     address_id INT PRIMARY KEY,
-    country VARCHAR(255),
-    city VARCHAR(255),
-    zip INT,
-    street_name VARCHAR(255),
-    civic_number VARCHAR(10)
+    country VARCHAR(255) NOT NULL,
+    city VARCHAR(255) NOT NULL,
+    zip INT NOT NULL,
+    street_name VARCHAR(255) NOT NULL,
+    civic_number VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE Passengers (
@@ -73,7 +73,7 @@ CREATE TABLE Stops_Passengers (
 
 CREATE TABLE PhoneNumbers (
     number VARCHAR(20) PRIMARY KEY,
-    card_id INT,
+    card_id INT NOT NULL,
     FOREIGN KEY (card_id) REFERENCES Passengers(card_id)
 );
 
