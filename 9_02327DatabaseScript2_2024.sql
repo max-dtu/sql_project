@@ -3,6 +3,11 @@
   INSERT INTO Stops (stop_id, stop_name, GPS)
 VALUES (107, 'DTU Lyngby Campus', '40.730610,-73.935242');
 
+INSERT INTO Stops (stop_id, stop_name, GPS) VALUES
+(108, 'Rest stop 1', '35.2616383,-47.23901445'),
+(109, 'Rest stop 2', '45.5232766,-23.4780289'),
+(110, 'Klampenborgvej', '55.774613630806115, 12.524482144716382');
+
 select * from Stops;
 -- reslut after adding the above row:
 	-- stop_id stop_name 	GPS
