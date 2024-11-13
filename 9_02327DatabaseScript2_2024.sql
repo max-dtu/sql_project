@@ -241,3 +241,4 @@ select * from short_ride;
 create view long_ride as select ride_id from Rides where duration >= 30;
 select * from long_ride;
 -- all start and end stops of lines 
+create view edge_stops as select stop_id from Stops_line where stop_order = 1 or stop_order = (select max(stop_order) from Stops_line);
