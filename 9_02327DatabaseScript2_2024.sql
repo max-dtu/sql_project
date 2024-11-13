@@ -46,7 +46,7 @@ select * from Stops;
       -- Show the ID of the passengers who took a ride from the first stop of the line taken.
       select * from Stops_Line;
       select * from Rides, Stops_Line where Stops_Line.stop_order = 1;
-      select distinct card_id from Rides, Stops_Line where Stops_Line.stop_order = 1;
+      select card_id from Rides, Stops_Line where Rides.on_stop_id = Stops_Line.stop_id and Stops_Line.stop_order = 1; -- This will do a cartesian join and then, it will only keep the rows with Rides.on_stop_id = Stops_Line.stop_id and on_stop_id order = 1, A passenger could take 2 lines, both from the start of the line.
 		-- output:
         -- card_id
         -- 1001
@@ -57,14 +57,14 @@ select * from Stops;
       -- Show the name of the bus stop served my most lines.
        select * from Stops;
       select * from Stops_Line;
-      select stop_id, count(Stops_Line.stop_id) from Stops_Line group by Stops_Line.stop_id LIMIT 1;
+      select stop_id, count(Stops_Line.stop_id) as stop_count from Stops_Line group by Stops_Line.stop_id ORDER BY stop_count DESC; -- Here we just count the stop_ids and order them and the top will be the name of the bus stop served by most lines.
       -- output:
       -- stop_id
       -- 101
       
       -- For each line, show the ID of the passenger who took the ride that lasted longer.
       select * from Rides;
-      select card_id, MAX(duration), line_id from Rides group by line_id;
+      select card_id, MAX(duration), line_id from Rides group by line_id; -- we group by line_id and then find the max duration for each group.
       -- output:
       -- card_id MAX(duration) line_id
       -- 1001 40 1
@@ -73,7 +73,26 @@ select * from Stops;
 
       -- Show the ID of the passengers who never took a bus line more than once per day.
       select *, COUNT(card_id) from Rides group by start_date;
-      SELECT distinct card_id FROM Rides GROUP BY card_id, line_id, start_date HAVING COUNT(ride_id) = 1;
+    SELECT distinct card_id FROM Rides GROUP BY card_id, line_id, start_date HAVING COUNT(ride_id) = 1; -- we sort out so that each group has distinct card_id, start_id, start_date, we get the following groups 
+      
+-- '1001', '50001', '2024-10-01', '08:00:00', '30', '101', '102', '1'
+
+-- '1002' , '50001', '2024-10-01', '08:00:00', '30', '101', '102', '1'
+
+-- '1003' , '50002', '2024-10-01', '08:00:00', '40', '101', '103', '1'
+
+-- '1003' , '50003', '2024-10-01', '09:00:00', '30', '101', '104', '3'
+
+-- '1004' , '50004', '2024-10-02', '09:30:00', '20', '102', '103', '2'
+-- '1004' , '50005', '2024-10-02', '11:15:00', '20', '103', '102', '2'
+-- '1004' , '50006', '2024-10-02', '11:15:00', '30', '103', '101', '2'
+
+-- '1005' , '50005', '2024-10-02', '11:15:00', '20', '103', '102', '2'
+
+-- '1005' , '50007', '2024-10-03', '11:15:00', '20', '103', '102', '2'
+
+-- then we start counting , we can see all the passengers having one count except passenger 1004
+
       -- output:
       -- card_id
       -- 1001
@@ -84,7 +103,7 @@ select * from Stops;
 	
 
       -- Show the name of the bus stops that are never used, that is, they are neither the start nor the end stop for any ride.
-    select stop_id from Stops where stop_id not in (SELECT distinct on_stop_id FROM Rides UNION SELECT DISTINCT off_stop_id FROM Rides);
+       select stop_id from Stops where stop_id not in (SELECT distinct on_stop_id FROM Rides UNION SELECT DISTINCT off_stop_id FROM Rides); -- The subquery gets us a list of on_stops_id + off_stop_id, if a stop is not in tha list, then it's a stop that is not being used.
     -- output:
     -- stop_id
     -- 105
