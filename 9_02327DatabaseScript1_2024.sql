@@ -83,7 +83,7 @@ CREATE TABLE PhoneNumbers (
 (2, 'Ydre måneby rute', 101),
 (3, 'Troldmandskvarteret Syd', 104),
 (4, 'Troldmandskvarteret Nord', 101),
-(5, 'Grottevej', 105);
+(5, 'GummiKarsten Circus', 105);
 
 INSERT INTO Stops (stop_id, stop_name, GPS) VALUES
 (101, 'Bermuda Triangle', '25.0000,-71.0000'),
@@ -102,7 +102,7 @@ INSERT INTO Passengers (card_id, email, first_name, last_name, address_id) VALUE
 (1001, 'martin@bitfrost.com', 'Martin', 'Bitfrost', 111),
 (1002, 'martinogmette@posteo.dk', 'Martin', 'Grønbech', 111),
 (1003, 'gottago@fastmail.com', 'Sonic', 'Thehedgehod', 112),
-(1004, 'xxx_Shadow_xxx@ex.com', 'Shadow', 'Shadowsen', 113),
+(1004, 'xxx_Shadow_xxx@xxx.com', 'Shadow', 'Shadowsen', 113),
 (1005, 'gothboy96@gmail.com', 'Gothboy', 'Ninentysix', 113);
 
 INSERT INTO Rides (card_id, ride_id, start_date, start_time, duration, on_stop_id, off_stop_id, line_id) VALUES
