@@ -67,20 +67,20 @@ CREATE TABLE Passengers (
 );
 
 CREATE TABLE Rides (
-    card_id INT,
-    ride_id INT,
-    start_date DATE,
-    start_time TIME,
-    duration INT,
-    on_stop_id INT,
-    off_stop_id INT,
-    line_id INT,
-    PRIMARY KEY (card_id, ride_id),
-    FOREIGN KEY (card_id) REFERENCES Passengers(card_id),
-    FOREIGN KEY (line_id) REFERENCES Line(line_id),
-    FOREIGN KEY (on_stop_id) REFERENCES Stops(stop_id),
-    FOREIGN KEY (off_stop_id) REFERENCES Stops(stop_id)
+    start_date DATE NOT NULL,          
+    start_time TIME NOT NULL,         
+    bus_id VARCHAR(20) NOT NULL,       
+    duration INT NOT NULL,             
+    on_stop_id INT NOT NULL,         
+    off_stop_id INT NOT NULL,        
+    line_id INT NOT NULL,             
+    PRIMARY KEY (start_date, start_time, bus_id), -- Composite primary key
+    FOREIGN KEY (bus_id) REFERENCES Buses(plate_number), 
+    FOREIGN KEY (on_stop_id) REFERENCES Stops(stop_id),  
+    FOREIGN KEY (off_stop_id) REFERENCES Stops(stop_id), 
+    FOREIGN KEY (line_id) REFERENCES Line(line_id)       
 );
+
 
 
 CREATE TABLE Stops_Passengers (
