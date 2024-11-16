@@ -19,6 +19,26 @@ CREATE TABLE Stops (
     GPS VARCHAR(255)
 );
 
+
+
+CREATE TABLE Buses (
+    plate_number VARCHAR(20) PRIMARY KEY, 
+    model VARCHAR(50) NOT NULL,          
+    capacity INT NOT NULL,               
+    manufacture_year YEAR NOT NULL       
+);
+
+CREATE TABLE Rides_Passengers (
+    start_date DATE NOT NULL,           
+    start_time TIME NOT NULL,            
+    bus_id VARCHAR(20) NOT NULL,         
+    card_id INT NOT NULL,                
+    PRIMARY KEY (start_date, start_time, bus_id, card_id), 
+    FOREIGN KEY (bus_id) REFERENCES Buses(plate_number)  
+);
+
+
+
 CREATE TABLE Stops_Line (
     line_id INT,
     stop_id INT,
@@ -104,6 +124,32 @@ INSERT INTO Passengers (card_id, email, first_name, last_name, address_id) VALUE
 (1003, 'gottago@fastmail.com', 'Sonic', 'Thehedgehod', 112),
 (1004, 'xxx_Shadow_xxx@xxx.com', 'Shadow', 'Shadowsen', 113),
 (1005, 'gothboy96@gmail.com', 'Gothboy', 'Ninentysix', 113);
+
+
+INSERT INTO Buses (plate_number, model, capacity, manufacture_year) VALUES
+    ('AB1234', 'Volvo 7900', 50, 2018),
+    ('CD5678', 'Mercedes Citaro', 40, 2019),
+    ('EF9012', 'MAN Lion’s City', 45, 2020),
+    ('GH3456', 'Scania Citywide', 55, 2017),
+    ('IJ7890', 'BYD K9', 42, 2021),
+    ('KL2345', 'Solaris Urbino', 48, 2016),
+    ('MN6789', 'Alexander Dennis Enviro400', 60, 2019),
+    ('OP9012', 'Iveco Urbanway', 52, 2020),
+    ('QR3456', 'Van Hool A330', 44, 2022),
+    ('ST7890', 'Blue Bird Vision', 38, 2023);
+
+
+INSERT INTO Rides_Passengers (start_date, start_time, bus_id, card_id) VALUES
+	('2023-10-01', '08:00:00', 1, 1001),
+	('2023-10-01', '08:00:00', 1, 1002),
+	('2023-10-01', '08:30:00', 2, 1003),
+	('2023-10-01', '08:30:00', 2, 1004),
+	('2023-10-02', '08:00:00', 3, 1005),
+	('2023-10-02', '08:00:00', 3, 1006),
+	('2023-10-02', '08:00:00', 3, 1007),
+	('2023-10-01', '08:30:00', 2, 1008),
+	('2023-10-01', '08:00:00', 1, 1009),
+	('2023-10-02', '08:00:00', 3, 1010);
 
 INSERT INTO Rides (card_id, ride_id, start_date, start_time, duration, on_stop_id, off_stop_id, line_id) VALUES
 (1001, 50001, '2024-10-01', '08:00:00', 30, 101, 102, 1),
