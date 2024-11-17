@@ -9,17 +9,6 @@ INSERT INTO Stops (stop_id, stop_name, GPS) VALUES
 (110, 'Klampenborgvej', '55.774613630806115, 12.524482144716382');
 
 select * from Stops;
--- reslut after adding the above row:
--- '101', 'Bermuda Triangle', '25.0000,-71.0000'
--- '102', 'Krateret', '24.9640,-71.0205'
--- '103', 'Grotten', '25.0306,-70.9632'
--- '104', 'Lunar Campus', '24.9818,-70.9352'
--- '105', 'Rådhuset', '25.0061,-70.9840'
--- '106', 'The Best Stop', '25.0061,-70.9840'
--- '107', 'DTU Lyngby Campus', '55.7849149,12.5219711'
--- '108', 'Rest stop 1', '35.2616383,-47.23901445'
--- '109', 'Rest stop 2', '45.5232766,-23.4780289'
--- '110', 'Klampenborgvej', '55.774613630806115, 12.524482144716382'
 
 
 UPDATE Stops
@@ -36,61 +25,33 @@ DELETE FROM Stops WHERE stop_id = 107;
   -- (2) the queries made (as in section 6)
     -- Answer the following questions by writing appropriate SQL table queries:
       -- Show the ID of the passengers who took a ride from the first stop of the line taken.
-      select * from Stops_Line;
-      select * from Rides;
-      select * from Rides, Stops_Line where Stops_Line.stop_order = 1;
+select * from Rides, Stops_Line where Stops_Line.stop_order = 1; -- testing
 SELECT Rides_Passengers.card_id, Rides.*, Stops_Line.*
 FROM Rides JOIN Stops_Line ON Rides.on_stop_id = Stops_Line.stop_id
 JOIN Rides_Passengers ON Rides.start_date = Rides_Passengers.start_date 
                       AND Rides.start_time = Rides_Passengers.start_time 
                       AND Rides.bus_id = Rides_Passengers.bus_id
 WHERE Stops_Line.stop_order = 1;
- -- This will do a cartesian join and then, it will only keep the rows with Rides.on_stop_id = Stops_Line.stop_id and on_stop_id order = 1, A passenger could take 2 lines, both from the start of the line. The second join maps each row from the first join to a card_id
-		-- output:
+-- or
+SELECT distinct Rides_Passengers.card_id FROM Rides, Stops_Line, Rides_Passengers WHERE Rides.on_stop_id = Stops_Line.stop_id and Stops_Line.stop_order = 1;
+ -- This will do a cartesian join and then, it will only keep the rows with Rides.on_stop_id = Stops_Line.stop_id and on_stop_id order = 1, A passenger could take 2 lines, both from the start of the line. The second join maps each row from the first join to a card_id.
 
       -- Show the name of the bus stop served my most lines.
-       select * from Stops;
-      select * from Stops_Line;
       select stop_id, count(Stops_Line.stop_id) as stop_count from Stops_Line group by Stops_Line.stop_id ORDER BY stop_count DESC; -- Here we just count the stop_ids and order them and the top row will be the name of the bus stop served by most lines.
-      -- output:
-      -- stop_id
-      -- 101
-      
+
       -- For each line, show the ID of the passenger who took the ride that lasted longer.
-SELECT max(duration),  Rides_Passengers.card_id FROM Rides JOIN Rides_Passengers using (start_date, start_time, bus_id) group by line_id;
--- We join the two tables using the shared primary keys and then we find the max duraion relative to line_id
+            SELECT * FROM Rides JOIN Rides_Passengers USING (start_date, start_time, bus_id) ORDER BY duration desc;
 
       -- Show the ID of the passengers who never took a bus line more than once per day.
-
       SELECT card_id FROM Rides_Passengers group by start_date, card_id having count(*) = 1;
 
-     -- We put the rows with same start_date and card_id togther
-		
-	-- ('2023-10-01', '08:00:00', 'AB1234', 1001), 
-    -- ('2023-10-01', '09:00:00', 'EF9012', 1001), 
-    
-    -- ('2023-10-01', '08:00:00', 'AB1234', 1002), 
-    
-    -- ('2023-10-01', '08:30:00', 'CD5678', 1003), 
-    
-    -- ('2023-10-01', '08:30:00', 'CD5678', 1004), 
-    
-     -- ('2023-10-01', '08:30:00', 'CD5678', 1005), 
-    
-   
-     -- ('2023-10-02', '09:00:00', 'EF9012', 1002), 
-    
-    -- ('2023-10-02', '09:30:00', 'GH3456', 1003);
--- then we start counting the rows in each group, we can see all the passengers having one count except passenger 1001
+     -- We put the rows with same start_date and card_id togther, then we start counting the rows in each group, we can see all the passengers having one count except passenger 1001
      
 	
 
       -- Show the name of the bus stops that are never used, that is, they are neither the start nor the end stop for any ride.
        select stop_id from Stops where stop_id not in (SELECT distinct on_stop_id FROM Rides UNION SELECT DISTINCT off_stop_id FROM Rides); -- The subquery gets us a list of on_stops_id + off_stop_id, if a stop is not in tha list, then it's a stop that is not being used.
-    -- output:
-    -- stop_id
-    -- 105
-    -- 106
+  
     
   -- (3) the statements used to create and apply functions, procedures, triggers, and events (as in section 7)
       -- Implement and explain what they do:
@@ -233,9 +194,11 @@ create view popular_stop as select stop_id, count(Stops_Line.stop_id) from Stops
 select * from popular_stop;
 
 -- view for each line, the ID of the passenge who took the ride that lasted longer. ie. the max durations for the different lines
-create view longest_ride as select card_id, MAX(duration), line_id from Rides_Passengers, Rides group by line_id;
-select * from longest_ride;
-
+ create view longest_ride as select card_id, MAX(duration), line_id from Rides_Passengers, Rides group by line_id; -- it is a shame of SQL that this does not work as expected.
+ select * from longest_ride;
+create view ordering_by_longest_ride as SELECT * FROM Rides JOIN Rides_Passengers USING (start_date, start_time, bus_id) ORDER BY duration desc;
+select * from ordering_by_longest_ride;
+ 
 -- view for the Id of the passengers who never took a bus line more than once per day
 DROP VIEW IF EXISTS one_ride_passenger;
 create view one_ride_passenger as SELECT card_id FROM Rides_Passengers group by start_date, card_id having count(*) = 1;
